@@ -3,13 +3,21 @@
 
 #include <QMap>
 
+/*!   Класс закрытой информации, для снятия излишней информации с интерфейсного
+ * класса.
+ */
 class ServerIntf::Data
 {
 public:
+    //! Указатель на внешний объект. Используется подключения слотов в downloader().
   ServerIntf *owner;
+    //! Указатель на объект получения данных.
   InetFile *dwnldr;
+    //! Метод создает объект.
   InetFile *downloader();
+    //! Список идентификаторов и номеров привязанных к ним страниц.
   QMap<InetFileTaskId,int> tasks;
+    //! Конструктор, однако.
   Data(ServerIntf *own):owner(own),dwnldr(0){}
 };
 

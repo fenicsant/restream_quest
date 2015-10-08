@@ -21,10 +21,11 @@ public:
       //! Флаг того, что устройство является QBuffer созданным при создании объекта.
     bool fileMostDestroy;
 
+      //!  Конструктор элемента очереди.
     QueueItem(const QString &URL, QIODevice *afile):
       poolIndex(TSWaitForStarting),url(URL),file((afile)?afile:new QBuffer()),
       fileMostDestroy(afile==0){if (fileMostDestroy) ((QBuffer*)file)->open(QBuffer::ReadWrite);}
-
+      //! Деструктор.
     ~QueueItem(){if (fileMostDestroy) delete file;}
   };
       //! Структура элемента пула получения информации.
@@ -36,7 +37,7 @@ public:
       //! Объект сетевого интерфейса
     QNetworkReply *reply;
   };
-      //  Использовал ConstIterator, чтобы меньше писать
+      //!  Использовал ConstIterator, чтобы меньше писать
   typedef QList<QueueItem *> Queue;
 
       //! Указатель на внешний объект. Используется при вызове сигналов.
@@ -58,7 +59,9 @@ public:
   int poolIndexByReply(QObject *reply);
       //! Возвращает fmanager, создает объект при необходимости.
   QNetworkAccessManager * manager();
+      //! Конструктор
   Data(InetFile *own):owner(own),pool(PoolSize),fmanager(0){}
+      //! Деструктор
   ~Data();
 };
 

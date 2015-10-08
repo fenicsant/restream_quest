@@ -18,34 +18,40 @@ class ServerIntf : public QObject
 {
   Q_OBJECT
 public:
-      //! Экземпляр объекта
-      /*! Характер класса не требует создания более одного экзепляра */
+      //! Экземпляр объекта.
+      /*! Характер класса не требует создания более одного экзепляра. */
   static ServerIntf * instance();
   ~ServerIntf();
 signals:
-      //! Вызывается при успешной загрузке содержимого страницы
+      //! Вызывается при успешной загрузке содержимого страницы.
       /*! @param page - номер запрашиваемой страницы;
-          @param content - json содержимое страницы*/
+          @param content - json содержимое страницы.*/
   void pageReady(int page, const QByteArray & content);
-      //! Вызывается при возникновении ошибки при получении страницы
+      //! Вызывается при возникновении ошибки при получении страницы.
       /*! @param page - номер запрашиваемой страницы;
-          @param errorString - описание ошибки */
+          @param errorString - описание ошибки. */
   void pageError(int page, const QString & errorString);
 public slots:
-      //! Производит установку запроса на получения страницы под номером @b page
+      //! Производит установку запроса на получения страницы под номером @b page.
   void requestList(int page);
 private:
+      //! Обращение к экземпляру класса производится при помощи instance().
   ServerIntf();
+      //! Структура закрытых данных.
   class Data;
+      //! Данные класса.
   Data *d;
 private slots:
+      //! Вызывается при окончании загрузки.
   void downloadFinish(const InetFileTaskId &id);
+      //! Вызывается при ошибках полученя данных.
   void downloadError(const InetFileTaskId &id, const QString &errorString);
 };
 
-//! @return экземпляр класса интерфейса с API базы-кинофильмов
+//! @return экземпляр класса интерфейса с API базы-кинофильмов.
 inline ServerIntf *serverIntf(){return ServerIntf::instance();}
 
+//! @file serverintf.h содержит класс интерфейса с серверным API.
 /*
 class ServerIntfTester : public QObject
 {

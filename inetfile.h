@@ -7,7 +7,10 @@
 #include <QNetworkReply>
 class QIODevice;
 
-//! Класс предоставляет простой интерфейс для получения файлов из интернета
+//  Идентификатор задачи.
+struct InetFileTaskId;
+
+//! Класс предоставляет простой интерфейс для получения файлов из интернета.
 /*! Основное назначение класса упростить превращение строки URL в данные файла.
  *
  * Для получения содержимого файла вызывается метод newTask.
@@ -24,44 +27,46 @@ class QIODevice;
  * QNetworkAccessManager.
  */
 
-//! Идентификатор задачи
-struct InetFileTaskId
-{void*uid;InetFileTaskId():uid(0){}};
-
 class InetFile : public QObject
 {
   Q_OBJECT
 public:
-    //! Подключает сигналы текущего объекта к слотам receiver'а
+    //! Подключает сигналы текущего объекта к слотам receiver'а.
   InetFile * join(QObject *receiver,const char *finishMember,
                   const char *errorMember, const char * progressMember=0);
-    //! Создает новую задачу на получение файла
+    //! Создает новую задачу на получение файла.
   InetFileTaskId newTask(const QString & url, QIODevice * file = 0);
-    //! Раширенные состояния задачи
+    //! Раширенные состояния задачи.
   enum TaskExtStates {
-    //! Ожидает начала выполнения
+    //! Ожидает начала выполнения.
     TSWaitForStarting = -1,
-    //! Окончена, ожидает утилизации
+    //! Окончена, ожидает утилизации.
     TSFinished        = -2,
-    //! Прервана по причине ошибки
+    //! Прервана по причине ошибки.
     TSFailed          = -3,
-    //! Удален
+    //! Удален.
     TSRemoved         = -4
   };
-    //! Возвращает состояние задачи
+    //! Возвращает состояние задачи.
+    /*! При положительных значениях количество полученных данных в десятых долях
+     * процента. В случае отрицательных значений, возвращается одно из значений
+     * TaskExtStates. */
   int getTaskState(InetFileTaskId id)const;
-    //! Удаляет задачу. Если задача еще выполняется, то она прерывается
+    //! Удаляет задачу. Если задача еще выполняется, то она прерывается.
   void rmTask(InetFileTaskId id);
-    //! Возвращает устройство вывода данных
+    //! Возвращает данные получаемые в задаче.
+    /*! Если задается file в методе newTask, данные возвращаться не будут.
+     * Метод предназначен для получения данных только для случаев внутренней
+     * буферизации данных. */
   QByteArray getTaskData(InetFileTaskId id)const;
-    //! Возвращает устройство вывода данных
+    //! Возвращает описани ошибки получения данных. @sa getTaskState(), TSFailed.
   QString getTaskError(InetFileTaskId id)const;
-    //! Конструктор
+    //! Конструктор.
   InetFile(QObject *parent = 0);
-    //! Деструктор
+    //! Деструктор.
   ~InetFile();
   enum {
-    //! Количество параллельных закачек файлов
+    //! Количество параллельных закачек файлов.
     PoolSize = 6
   };
 signals:
@@ -77,21 +82,35 @@ signals:
      *  @param errorString - описание ошибки. */
   void error(const InetFileTaskId & id, const QString & errorString);
 private:
+    //! Структура закрытых данных.
   class Data;
+    //! Данные класса.
   Data *d;
 private slots:
-    //! вызывается при получении части данных
+    //! Вызывается при получении части данных.
   void dwnldProgres(qint64 bytesReceived, qint64 bytesTotal);
-    //! вызывается при ошибках полученя данных
+    //! Вызывается при ошибках полученя данных.
   void dwnldError(QNetworkReply::NetworkError code);
-    //! вызывается при окончании загрузки
+    //! Вызывается при окончании загрузки.
   void dwnldFinished();
 };
 
-
+//!  Идентификатор задачи.
+/*! Структура предназначена для идентификации задач получения файлов.
+ * При работе в классе InetFileTaskId вначале проверяется на корректность
+ * указателя. Если указатель не корректен, то задача считается удаленной. */
+struct InetFileTaskId
+{
+  void* uid; //!< Уникальное значение, которое делает идентификатор неповторимым.
+  InetFileTaskId():uid(0){}
+};
+//! Оператор необходимый для сортировки в классах Qt.
 inline bool operator <(const InetFileTaskId & id1, const InetFileTaskId & id2)
 {return id1.uid<id2.uid;}
+//! Оператор необходимый для сортировки в классах Qt.
 inline bool operator ==(const InetFileTaskId & id1, const InetFileTaskId & id2)
 {return id1.uid==id2.uid;}
+
+//! @file inetfile.h Содержит класс получения данных из интернета.
 
 #endif // INETFILE_H
