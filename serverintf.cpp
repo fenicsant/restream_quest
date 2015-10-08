@@ -3,11 +3,6 @@
 
 #include <QMap>
 
-inline bool operator <(const InetFileTaskId & id1, const InetFileTaskId & id2)
-{return id1.uid<id2.uid;}
-inline bool operator ==(const InetFileTaskId & id1, const InetFileTaskId & id2)
-{return id1.uid==id2.uid;}
-
 class ServerIntf::Data
 {
 public:
@@ -54,7 +49,10 @@ void ServerIntf::requestList(int page)
     d->tasks.remove(id);
   }
   //! \todo сделать загрузку урл из конфига
-  id = d->downloader()->newTask(QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/b7887adc444188d8aa8e61d39b82950f28c03966/movies.json"));
+  id = d->downloader()->newTask(
+        QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/637c9df9a252a1127a6569adb2b8486a8e559682/movies.json")
+        );
+        //QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/b7887adc444188d8aa8e61d39b82950f28c03966/movies.json"));
   d->tasks[id]=page;
 }
 
@@ -91,9 +89,7 @@ void ServerIntf::downloadError(const InetFileTaskId &id, const QString &errorStr
 InetFile *ServerIntf::Data::downloader()
 {
   try {
-    if (dwnldr) return dwnldr;
-    (dwnldr = new InetFile())->join(owner,SLOT(downloadFinish(InetFileTaskId)),SLOT(downloadError(InetFileTaskId,QString)));
-    return dwnldr;
+    return dwnldr?dwnldr:(dwnldr = new InetFile())->join(owner,SLOT(downloadFinish(InetFileTaskId)),SLOT(downloadError(InetFileTaskId,QString)));
   } catch (...) {
   }
   return 0;

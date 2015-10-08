@@ -63,12 +63,13 @@ public:
 };
 
 
-void InetFile::join(QObject *receiver, const char *finishMember,
+InetFile *InetFile::join(QObject *receiver, const char *finishMember,
                     const char *errorMember, const char *progressMember)
 {
   if (finishMember) connect(this,SIGNAL(finished(InetFileTaskId)),receiver,finishMember);
   if (errorMember) connect(this,SIGNAL(error(InetFileTaskId,QString)),receiver,errorMember);
   if (progressMember) connect(this,SIGNAL(progress(InetFileTaskId,int)),receiver,progressMember);
+  return this;
 }
 
 InetFileTaskId InetFile::newTask(const QString &url, QIODevice *file)

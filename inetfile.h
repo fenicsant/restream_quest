@@ -33,7 +33,8 @@ class InetFile : public QObject
   Q_OBJECT
 public:
     //! Подключает сигналы текущего объекта к слотам receiver'а
-  void join(QObject *receiver,const char *finishMember, const char *errorMember, const char * progressMember=0);
+  InetFile * join(QObject *receiver,const char *finishMember,
+                  const char *errorMember, const char * progressMember=0);
     //! Создает новую задачу на получение файла
   InetFileTaskId newTask(const QString & url, QIODevice * file = 0);
     //! Раширенные состояния задачи
@@ -86,5 +87,11 @@ private slots:
     //! вызывается при окончании загрузки
   void dwnldFinished();
 };
+
+
+inline bool operator <(const InetFileTaskId & id1, const InetFileTaskId & id2)
+{return id1.uid<id2.uid;}
+inline bool operator ==(const InetFileTaskId & id1, const InetFileTaskId & id2)
+{return id1.uid==id2.uid;}
 
 #endif // INETFILE_H
