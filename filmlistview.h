@@ -17,13 +17,17 @@ class FilmListView : public QWidget
 {
   Q_OBJECT
 public:
+    //! Вызывает окно более детального простмотра информации о фильме.
   void previewFilm(FilmListItem *film);
-  //! Конструктор
+    //! Конструктор.
   explicit FilmListView(QWidget *parent = 0);
 signals:
+    //! Сигнал окончания загрузки.
   void reloadFinished();
 public slots:
+    //! Инициирует обновление списка фильмов.
   void beginReload();
+    //! Закрывает окно более детального просмотра информации о фильме.
   void closePreview();
 protected:
   void resizeEvent(QResizeEvent *);

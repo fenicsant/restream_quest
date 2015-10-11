@@ -217,6 +217,7 @@ void FilmListView::pageReady(int page, const QByteArray &content)
       }
       delete flm;
     }
+    emit reloadFinished();
   }
   return;
 }
