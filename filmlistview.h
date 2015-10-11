@@ -30,18 +30,28 @@ public slots:
     //! Закрывает окно более детального просмотра информации о фильме.
   void closePreview();
 protected:
+    //! Вызывается при изменении размеров окна. Необходим для корректного отображения превью.
   void resizeEvent(QResizeEvent *);
 private:
+    //! Класс закрытых данных.
   class Data;
+    //! Закрытые данные класса.
   Data *d;
   enum {
+    //! Смещение окна детальной информации от края окна.
     PreviewIdentSize = 50
   };
 private slots:
+    //! Вызывается при получении данных страницы фильмов.
   void pageReady(int page, const QByteArray & content);
+    //! Вызывается при ошибке получения данных страницы фильмов.
   void pageError(int page, const QString & errorStr);
+    //! Вызывается при получении другой информации.
   void fileFinished(const InetFileTaskId & id);
+    //! Вызывается при ошибках получения информации.
   void fileError(const InetFileTaskId & id, const QString & errorStr);
 };
+
+//! \file filmlistview.h Основной компонент отображения списка фильмов.
 
 #endif // FILMLISTVIEW_H

@@ -28,7 +28,8 @@ public:
   QString overview;     //!< Краткое содержание фильма.
   QString poster_path;  //!< Адрес обложки фильма.
   QString video;        //!< Адрес превью фильма.
-                      //! Другие характеристики фильма (имя - значение).
+
+                        //! Другие характеристики фильма (имя - значение).
   QMap<QString,QVariant> property;
     //! Возвращает загруженную обложку фильма
   const QPixmap & poster() const;
@@ -63,5 +64,7 @@ private:
     //! Закрытые данные класса.
   Data *d;
 };
+
+//! \file filmlistitem.h Описывает элемент списка фильмов.
 
 #endif // FILMLISTITEM_H

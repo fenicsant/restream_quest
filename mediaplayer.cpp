@@ -11,41 +11,55 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 
+//! Класс закрытых данных.
+/*! Класс скрывает все данные класса MediaPlayer */
 class MediaPlayer::Data : public QObject
 {
 public:
-  MediaPlayer *own;
-  QGridLayout *lay;
-  QLabel      *issue;
-  QVideoWidget*video;
-  QFrame      *bottomCtrls;
-  QHBoxLayout *bottomLay;
-  QPushButton *play;
-  QPushButton *pause;
-  QPushButton *stop;
-  QPropertyAnimation
+  MediaPlayer *own;         //!< Внешний объект.
+  QGridLayout *lay;         //!< Лайоут MediaPlayer'а.
+  QLabel      *issue;       //!< Текстовое сообщение или об ошибке, или необходимости подождать.
+  QVideoWidget*video;       //!< Область вывода видео.
+  QFrame      *bottomCtrls; //!< Нижняя панель элементов контроля.
+  QHBoxLayout *bottomLay;   //!< Лайаут нижней панели.
+  QPushButton *play;        //!< Кнопка "play".
+  QPushButton *pause;       //!< Кнопка "pause".
+  QPushButton *stop;        //!< Кнопка "stop".
+  QPropertyAnimation        //!  Анимация "выдвигания" нижней панели.
               *bottomCtrlAnimation;
-  int bottomCtrlsHeight;
+  int bottomCtrlsHeight;    //!< Высота нижней панели.
 
-  QSlider     *position;
-  QSlider     *volume;
-  QMediaPlayer*player;
+  QSlider     *position;    //!< Позиция в фильме.
+  QSlider     *volume;      //!< Громкость проигрывания.
+  QMediaPlayer*player;      //!< Проигрыватель.
   QMediaPlaylist
-              *list;
+              *list;        //!< Список проигрывания.
+
+                            //!  Конструктор.
   Data(MediaPlayer *owner):QObject(owner),own(owner),lay(0),video(0),
     bottomCtrls(0),bottomLay(0),play(0),pause(0),stop(0),bottomCtrlAnimation(0),
     position(0),volume(0),player(0),list(0)
   {}
+      //! Размер файла иконки play.
   static const quint32 iPlayLen = 985;
+      //! Файл иконки play.
   static const unsigned char iPlay[iPlayLen];
+      //! Размер файла иконки pause.
   static const quint32 iPauseLen = 1028;
+      //! Файл иконки pause.
   static const unsigned char iPause[iPauseLen];
+      //! Размер файла иконки stop.
   static const quint32 iStopLen = 1006;
+      //! Файл иконки stop.
   static const unsigned char iStop[iStopLen];
+      //! Сообщение о готовности к работе.
   static const QString sPrompt;
+      //! Сообщение о процессе загрузки.
   static const QString sLoading;
+      //! Сообщение об ошибке.
   static const QString sError;
 protected:
+      //! Отслеживает перемещение мыши по окну вывода фильма, и отображает нижнюю панель.
   bool eventFilter(QObject *o, QEvent *ev) {
     QPoint p = own->mapFromGlobal(QCursor::pos());
     if (p.y()>=own->height()-bottomCtrlsHeight) {
@@ -212,6 +226,8 @@ void MediaPlayer::positionMoved(int position)
 {
   d->player->setPosition(position);
 }
+
+// Дальше идут только картинки. Если ничего не спрятано...
 
 const unsigned char MediaPlayer::Data::iStop[] = {
   0x89,
@@ -412,3 +428,4 @@ const unsigned char MediaPlayer::Data::iPause[] = {
   0xed,0xe5,0x58,0x69,0x95,0xd0,0xef,0x0,0x0,0x0,0x0,0x49,0x45,0x4e,0x44,0xae,
   0x42,0x60,0x82
 };
+// Нет, только картинки.

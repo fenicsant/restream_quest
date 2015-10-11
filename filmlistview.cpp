@@ -15,11 +15,12 @@
 #include "filmlistitem.h"
 #include "filmpreviewer.h"
 
+//! Класс закрытой информации класса FilmListView.
 class FilmListView::Data
 {
 public:
   class Label2Btn;
-  FilmListView * owner;
+  FilmListView * owner;       //!< Внешний объект.
   // Элементы отображения на экране
   QScrollArea * scrollArea;   //!< Объект скролирования списка фильмов.
   QWidget     * container;    //!< Объект содержащий список фильмов.
@@ -27,34 +28,43 @@ public:
   QVBoxLayout * layout;       //!< Лайоут списка фильмов.
   QList<FilmListItem *> films;//!< Список отображаемых фильмов.
 
-  FilmPreviewer *previewer;  //!< Обект вывода детальной информации по фильму.
-                             //!  Полупрозрачный объект, закрытия превью.
+  FilmPreviewer *previewer;   //!< Обект вывода детальной информации по фильму.
+
+                              //!  Полупрозрачный объект, закрытия превью.
   Label2Btn     *leftButtonPreview;
   // Элементы загрузки данных
-  InetFile loader;
-  int errorCount;
-  QMap<InetFileTaskId,FilmListItem*> loadPosters;
-  QList<FilmListItem *> shadowLoad;
+  InetFile loader;            //!< Загрузчик данных.
+  int errorCount;             //!< Счетчик ошибок загрузки.
 
+                              //!  Список загружаемых обложек фильмов.
+  QMap<InetFileTaskId,FilmListItem*> loadPosters;
+                              //!  Список загружаемых фильмов.
+  QList<FilmListItem *> shadowLoad;
+                              //!  Конструктор.
   Data(FilmListView *own) :
     owner(own),scrollArea(0),container(0),lLoadingError(0),layout(0),
     previewer(0),leftButtonPreview(0),errorCount(0){}
+                              //! Считает ошибки. При переполнении счетчика выводит сообщение.
   bool addeErrorCount(int loss_scale);
+                              //!  Производит очистку списка фоновой загрузки.
   void clearShadowLoad();
 };
 
+//! Класс на основе QLabel с обработкой нажатия кнопки мыши.
 class FilmListView::Data::Label2Btn : public QLabel
 {
 public:
-  FilmListView *parent_;
-  Label2Btn(FilmListView *parent);
+  FilmListView *parent_;            //!< Родительский объект.
+  Label2Btn(FilmListView *parent);  //!< Конструктор.
 protected:
+                                    //!  Обработка нажатия кнопки мыши.
   void mousePressEvent(QMouseEvent *ev)
   {
     if (parent_) parent_->closePreview();
     QLabel::mousePressEvent(ev);
   }
 };
+
 FilmListView::Data::Label2Btn::Label2Btn(FilmListView *parent) :
   QLabel(parent),parent_(parent)
 {
@@ -191,6 +201,7 @@ void FilmListView::pageReady(int page, const QByteArray &content)
     } else delete film;
   }
   if (page==total_pages) {
+    d->errorCount = 0;
     QList<FilmListItem*> toRm = d->films;
     QMap<int,FilmListItem*> byId;
     for(int i=d->films.size()-1; i>=0; --i) byId[d->films[i]->id] = d->films[i];

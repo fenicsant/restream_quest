@@ -9,30 +9,37 @@
 #include <QJsonArray>
 #include "filmlistview.h"
 
+//! Структура хранения закрытых данных класса FilmListItem.
 class FilmListItem::Data
 {
 public:
-  FilmListItem * owner;
-  FilmListView * listview;
-  QPixmap poster;
+  FilmListItem * owner;     //!< Внешний объект.
+  FilmListView * listview;  //!< Указатель на список фильмов. Вызывает открытие окна просмотра при клике мыши.
+  QPixmap poster;           //!< Обложка фильма в полном размере.
   class Frame;
-  Frame       * widget;
-  QGridLayout * layout;
-  QLabel      * lposter;
-  QLabel      * ltitle;
-  QLabel      * lgenres;
-  QLabel      * loverview;
+  Frame       * widget;     //!< Обект выводимый на экран.
+  QGridLayout * layout;     //!< Лайаут widget'а.
+  QLabel      * lposter;    //!< Уменьшеная обложка.
+  QLabel      * ltitle;     //!< Название фильма.
+  QLabel      * lgenres;    //!< Жанры фильма.
+  QLabel      * loverview;  //!< Краткое описание фильма.
+
+                            //!  Конструктор.
   Data(FilmListItem *own,FilmListView *lv) :
     owner(own),listview(lv),widget(0),layout(0),lposter(0),ltitle(0),lgenres(0),loverview(0){}
 };
 
+//! Класс обработывает событие нажатия левой кнопки мыши.
 class FilmListItem::Data::Frame : public QFrame
 {
 public:
-  FilmListItem * parent_;
-  FilmListView * listview;
+  FilmListItem * parent_;   //!< Внешний объект.
+  FilmListView * listview;  //!< Указатель на список фильмов для открытия окна просмотра.
+
+                            //! Конструктор.
   Frame(FilmListItem *parent,FilmListView *lv):QFrame(lv),parent_(parent),listview(lv){}
 protected:
+    //! Метод вызывается при нажатии кнопок мыши на объекте.
   void mousePressEvent(QMouseEvent *ev)
   {
     if (ev->button()==Qt::LeftButton) {
