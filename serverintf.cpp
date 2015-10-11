@@ -59,8 +59,8 @@ void ServerIntf::requestList(int page)
   //! \todo сделать загрузку урл из конфига
   id = d->downloader()->newTask(
         QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/637c9df9a252a1127a6569adb2b8486a8e559682/movies.json")
+        //QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/b7887adc444188d8aa8e61d39b82950f28c03966/movies.json")
         );
-        //QString::fromUtf8("https://gist.githubusercontent.com/numbata/5ed307d7953c3f7e716f/raw/b7887adc444188d8aa8e61d39b82950f28c03966/movies.json"));
   d->tasks[id]=page;
 }
 

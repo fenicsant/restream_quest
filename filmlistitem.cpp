@@ -36,7 +36,7 @@ protected:
   void mousePressEvent(QMouseEvent *ev)
   {
     if (ev->button()==Qt::LeftButton) {
-      //! \todo  сделать вызов превью
+      if (listview) listview->previewFilm(parent_);
     }
     QFrame::mousePressEvent(ev);
   }
@@ -44,6 +44,13 @@ protected:
 
 QWidget *FilmListItem::getAsWidget()
 {
+  static const char * styleSheet =
+      "#FilmListItem {border: 2px solid gray ; border-radius: 10px; background-color: #f2fcfc }\n"
+      "#FilmListItem:hover {background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.3831, fy:0.33, stop:0.119441 rgba(255, 255, 255, 255), stop:1 #f2fcfc)}\n"
+      "#FilmPoster {font: 14pt \"Tahoma\"; text-align: center center; }\n"
+      "#FilmTitle {font: 18pt \"Tahoma\";  color: #070A0C; }\n"
+      "#FilmGenres {font: 13pt \"Tahoma\";  color: #070A0C; }\n"
+      "#FilmOverview {font: 10pt \"Tahoma\";  color: #070A0C; }\n";
   try {
     d->widget = new Data::Frame(this,d->listview);
     d->layout = new QGridLayout();
@@ -58,10 +65,24 @@ QWidget *FilmListItem::getAsWidget()
     d->lgenres->setObjectName(QStringLiteral("FilmGenres"));
     d->loverview->setObjectName(QStringLiteral("FilmOverview"));
 
+    d->lposter->setWordWrap(true);
+    d->loverview->setWordWrap(true);
+    d->ltitle->setAlignment(Qt::AlignCenter);
+    d->lgenres->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    d->loverview->setAlignment(Qt::AlignJustify | Qt::AlignTop);
+    d->lposter->setFixedWidth(PosterFixetWidth);
     setPoster(d->poster);
     d->ltitle->setText(title);
-    d->lgenres->setText(genres.join(" "));
+    d->lgenres->setText(genres.join(", "));
     d->loverview->setText(overview);
+
+    d->layout->addWidget(d->lposter,1,1,3,1);
+    d->layout->addWidget(d->ltitle,1,2);
+    d->layout->addWidget(d->lgenres,2,2);
+    d->layout->addWidget(d->loverview,3,2);
+    d->layout->setRowStretch(3,999);
+    d->widget->setLayout(d->layout);
+    d->widget->setStyleSheet(styleSheet);
   }catch (...) {
     delete d->loverview;  d->loverview = 0;
     delete d->lgenres;    d->lgenres = 0;
