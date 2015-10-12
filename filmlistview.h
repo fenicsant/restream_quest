@@ -41,6 +41,7 @@ private:
     //! Смещение окна детальной информации от края окна.
     PreviewIdentSize = 50
   };
+  Q_DISABLE_COPY(FilmListView)
 private slots:
     //! Вызывается при получении данных страницы фильмов.
   void pageReady(int page, const QByteArray & content);

@@ -57,12 +57,13 @@ public:
     //! Возвращает строку - "постер не найден".
   static const QString &noposter();
     //! Конструктор
-  FilmListItem(FilmListView *parent);
+  explicit FilmListItem(FilmListView *parent);
 private:
     //! Структура закрытых данных.
   class Data;
     //! Закрытые данные класса.
   Data *d;
+  Q_DISABLE_COPY(FilmListItem)
 };
 
 //! \file filmlistitem.h Описывает элемент списка фильмов.

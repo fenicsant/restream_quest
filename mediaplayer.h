@@ -12,7 +12,7 @@ class MediaPlayer : public QFrame
   Q_OBJECT
 public:
     //! Конструктор.
-  MediaPlayer(QWidget * parent = 0);
+  explicit MediaPlayer(QWidget * parent = 0);
     //! Размер требуемый для отображения видео.
   QSize sizeHint() const;
     //! Деструктор.
@@ -27,6 +27,7 @@ private:
   class Data;
     //! Закрытые данные класса.
   Data *d;
+  Q_DISABLE_COPY(MediaPlayer)
 private slots:
     //! Вызывается при ошибках QMediaPlayer.
   void error(QMediaPlayer::Error error);

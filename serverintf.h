@@ -41,6 +41,7 @@ private:
   class Data;
       //! Данные класса.
   Data *d;
+  Q_DISABLE_COPY(ServerIntf)
 private slots:
       //! Вызывается при окончании загрузки.
   void downloadFinish(const InetFileTaskId &id);

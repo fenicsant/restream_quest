@@ -36,9 +36,9 @@ public:
               *list;        //!< Список проигрывания.
 
                             //!  Конструктор.
-  Data(MediaPlayer *owner):QObject(owner), own(owner), lay(0), video(0),
+  explicit Data(MediaPlayer *owner):QObject(owner), own(owner), lay(0), issue(0), video(0),
     bottomCtrls(0), bottomLay(0), play(0), pause(0), stop(0), bottomCtrlAnimation(0),
-    position(0), volume(0), player(0), list(0)
+    bottomCtrlsHeight(30),position(0), volume(0), player(0), list(0)
   {}
       //! Размер файла иконки play.
   static const quint32 iPlayLen = 985;

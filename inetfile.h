@@ -62,7 +62,7 @@ public:
     //! Возвращает описани ошибки получения данных. @sa getTaskState(), TSFailed.
   QString getTaskError(InetFileTaskId id)const;
     //! Конструктор.
-  InetFile(QObject *parent = 0);
+  explicit InetFile(QObject *parent = 0);
     //! Деструктор.
   ~InetFile();
   enum {
@@ -86,6 +86,7 @@ private:
   class Data;
     //! Данные класса.
   Data *d;
+  Q_DISABLE_COPY(InetFile)
 private slots:
     //! Вызывается при получении части данных.
   void dwnldProgres(qint64 bytesReceived, qint64 bytesTotal);

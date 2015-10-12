@@ -60,7 +60,7 @@ public:
       //! Возвращает fmanager, создает объект при необходимости.
   QNetworkAccessManager * manager();
       //! Конструктор
-  Data(InetFile *own):owner(own), pool(PoolSize), fmanager(0){}
+  explicit Data(InetFile *own):owner(own), pool(PoolSize), fmanager(0){}
       //! Деструктор
   ~Data();
 };

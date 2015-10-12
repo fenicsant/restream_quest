@@ -187,7 +187,7 @@ const QString &FilmListItem::noposter()
 }
 
 FilmListItem::FilmListItem(FilmListView *parent) :
-  id(0), d(new Data(this, parent))
+  id(0), adult(false), d(new Data(this, parent))
 {
 }
 

@@ -27,6 +27,7 @@ private:
   Ui::FilmPreviewer *ui;
     //! Поле хранения отображаемого фильма.
   FilmListItem *ffilm;
+  Q_DISABLE_COPY(FilmPreviewer)
 };
 
 //! \file filmpreviewer.h Выводит более детальную информацию о фильме.

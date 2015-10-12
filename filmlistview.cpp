@@ -41,7 +41,7 @@ public:
                               //!  Список загружаемых фильмов.
   QList<FilmListItem *> shadowLoad;
                               //!  Конструктор.
-  Data(FilmListView *own) :
+  explicit Data(FilmListView *own) :
     owner(own), scrollArea(0), container(0), lLoadingError(0), layout(0),
     previewer(0), leftButtonPreview(0), errorCount(0){}
                               //! Считает ошибки. При переполнении счетчика выводит сообщение.
@@ -55,7 +55,7 @@ class FilmListView::Data::Label2Btn : public QLabel
 {
 public:
   FilmListView *parent_;            //!< Родительский объект.
-  Label2Btn(FilmListView *parent);  //!< Конструктор.
+  explicit Label2Btn(FilmListView *parent);  //!< Конструктор.
 protected:
                                     //!  Обработка нажатия кнопки мыши.
   void mousePressEvent(QMouseEvent *ev)

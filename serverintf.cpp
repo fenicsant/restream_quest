@@ -18,7 +18,7 @@ public:
     //! Список идентификаторов и номеров привязанных к ним страниц.
   QMap<InetFileTaskId, int> tasks;
     //! Конструктор, однако.
-  Data(ServerIntf *own):owner(own), dwnldr(0){}
+  explicit Data(ServerIntf *own):owner(own), dwnldr(0){}
 };
 
 ServerIntf *ServerIntf::instance()
