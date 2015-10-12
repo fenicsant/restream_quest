@@ -16,9 +16,9 @@ public:
     //! Метод создает объект.
   InetFile *downloader();
     //! Список идентификаторов и номеров привязанных к ним страниц.
-  QMap<InetFileTaskId,int> tasks;
+  QMap<InetFileTaskId, int> tasks;
     //! Конструктор, однако.
-  Data(ServerIntf *own):owner(own),dwnldr(0){}
+  Data(ServerIntf *own):owner(own), dwnldr(0){}
 };
 
 ServerIntf *ServerIntf::instance()
@@ -43,11 +43,11 @@ ServerIntf::~ServerIntf()
 void ServerIntf::requestList(int page)
 {
   if (!d->downloader()) {
-    emit pageError(page,QString::fromUtf8("Приложению нехватило памяти"));
+    emit pageError(page, QString::fromUtf8("Приложению нехватило памяти"));
     return;
   }
   if (page!=1) {
-    emit pageError(page,QString::fromUtf8("Приложение в разработке: страниц только одна"));
+    emit pageError(page, QString::fromUtf8("Приложение в разработке: страниц только одна"));
     return;
   }
   InetFileTaskId id;
@@ -75,7 +75,7 @@ void ServerIntf::downloadFinish(const InetFileTaskId &id)
   if (!d->tasks.contains(id)) return;
   int page = d->tasks[id];
   try {
-    emit pageReady(page,d->downloader()->getTaskData(id));
+    emit pageReady(page, d->downloader()->getTaskData(id));
   } catch (...) {
     d->downloader()->rmTask(id);
     throw;
@@ -87,7 +87,7 @@ void ServerIntf::downloadError(const InetFileTaskId &id, const QString &errorStr
   if (!d->tasks.contains(id)) return;
   int page = d->tasks[id];
   try {
-    emit pageError(page,errorString);
+    emit pageError(page, errorString);
   } catch (...) {
     d->downloader()->rmTask(id);
     throw;

@@ -5,7 +5,7 @@
 
 
 FilmPreviewer::FilmPreviewer(QWidget *parent) :
-  QWidget(parent),ui(new Ui::FilmPreviewer)
+  QWidget(parent), ui(new Ui::FilmPreviewer)
 {
   ui->setupUi(this);
   setAutoFillBackground(true);

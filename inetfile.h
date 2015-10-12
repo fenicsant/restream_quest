@@ -32,7 +32,7 @@ class InetFile : public QObject
   Q_OBJECT
 public:
     //! Подключает сигналы текущего объекта к слотам receiver'а.
-  InetFile * join(QObject *receiver,const char *finishMember,
+  InetFile * join(QObject *receiver, const char *finishMember,
                   const char *errorMember, const char * progressMember=0);
     //! Создает новую задачу на получение файла.
   InetFileTaskId newTask(const QString & url, QIODevice * file = 0);
@@ -76,7 +76,7 @@ signals:
     //! Вызывается при получении файла для контроля процесса полученния данных
     /*! @param id - присвоеный идентификаторв очереди получения;
      *  @param tenthOfPercent - состояние загруженности в десятых процета. */
-  void progress(const InetFileTaskId & id,int tenthOfPercent);
+  void progress(const InetFileTaskId & id, int tenthOfPercent);
     //! Вызывается при прерывании получения файла в следствии ошибки
     /*! @param id - присвоеный идентификатор в очереди получения;
      *  @param errorString - описание ошибки. */

@@ -25,8 +25,10 @@ public:
   QLabel      * loverview;  //!< Краткое описание фильма.
 
                             //!  Конструктор.
-  Data(FilmListItem *own,FilmListView *lv) :
-    owner(own),listview(lv),widget(0),layout(0),lposter(0),ltitle(0),lgenres(0),loverview(0){}
+  Data(FilmListItem *own, FilmListView *lv) :
+    owner(own), listview(lv), widget(0), layout(0), lposter(0), ltitle(0),
+    lgenres(0), loverview(0)
+  {}
 };
 
 //! Класс обработывает событие нажатия левой кнопки мыши.
@@ -37,7 +39,8 @@ public:
   FilmListView * listview;  //!< Указатель на список фильмов для открытия окна просмотра.
 
                             //! Конструктор.
-  Frame(FilmListItem *parent,FilmListView *lv):QFrame(lv),parent_(parent),listview(lv){}
+  Frame(FilmListItem *parent, FilmListView *lv):
+    QFrame(lv), parent_(parent), listview(lv){}
 protected:
     //! Метод вызывается при нажатии кнопок мыши на объекте.
   void mousePressEvent(QMouseEvent *ev)
@@ -59,7 +62,7 @@ QWidget *FilmListItem::getAsWidget()
       "#FilmGenres {font: 13pt \"Tahoma\";  color: #070A0C; }\n"
       "#FilmOverview {font: 10pt \"Tahoma\";  color: #070A0C; }\n";
   try {
-    d->widget = new Data::Frame(this,d->listview);
+    d->widget = new Data::Frame(this, d->listview);
     d->layout = new QGridLayout();
     d->lposter = new QLabel(d->widget);
     d->ltitle = new QLabel(d->widget);
@@ -83,11 +86,11 @@ QWidget *FilmListItem::getAsWidget()
     d->lgenres->setText(genres.join(", "));
     d->loverview->setText(overview);
 
-    d->layout->addWidget(d->lposter,1,1,3,1);
-    d->layout->addWidget(d->ltitle,1,2);
-    d->layout->addWidget(d->lgenres,2,2);
-    d->layout->addWidget(d->loverview,3,2);
-    d->layout->setRowStretch(3,999);
+    d->layout->addWidget(d->lposter, 1, 1, 3, 1);
+    d->layout->addWidget(d->ltitle, 1, 2);
+    d->layout->addWidget(d->lgenres, 2, 2);
+    d->layout->addWidget(d->loverview, 3, 2);
+    d->layout->setRowStretch(3, 999);
     d->widget->setLayout(d->layout);
     d->widget->setStyleSheet(styleSheet);
   }catch (...) {
@@ -184,7 +187,7 @@ const QString &FilmListItem::noposter()
 }
 
 FilmListItem::FilmListItem(FilmListView *parent) :
-  id(0),d(new Data(this,parent))
+  id(0), d(new Data(this, parent))
 {
 }
 

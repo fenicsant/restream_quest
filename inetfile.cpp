@@ -23,7 +23,7 @@ public:
 
       //!  Конструктор элемента очереди.
     QueueItem(const QString &URL, QIODevice *afile):
-      poolIndex(TSWaitForStarting),url(URL),file((afile)?afile:new QBuffer()),
+      poolIndex(TSWaitForStarting), url(URL), file((afile)?afile:new QBuffer()),
       fileMostDestroy(afile==0){if (fileMostDestroy) ((QBuffer*)file)->open(QBuffer::ReadWrite);}
       //! Деструктор.
     ~QueueItem(){if (fileMostDestroy) delete file;}
@@ -60,7 +60,7 @@ public:
       //! Возвращает fmanager, создает объект при необходимости.
   QNetworkAccessManager * manager();
       //! Конструктор
-  Data(InetFile *own):owner(own),pool(PoolSize),fmanager(0){}
+  Data(InetFile *own):owner(own), pool(PoolSize), fmanager(0){}
       //! Деструктор
   ~Data();
 };
@@ -69,15 +69,15 @@ public:
 InetFile *InetFile::join(QObject *receiver, const char *finishMember,
                     const char *errorMember, const char *progressMember)
 {
-  if (finishMember) connect(this,SIGNAL(finished(InetFileTaskId)),receiver,finishMember);
-  if (errorMember) connect(this,SIGNAL(error(InetFileTaskId,QString)),receiver,errorMember);
-  if (progressMember) connect(this,SIGNAL(progress(InetFileTaskId,int)),receiver,progressMember);
+  if (finishMember) connect(this, SIGNAL(finished(InetFileTaskId)), receiver, finishMember);
+  if (errorMember) connect(this, SIGNAL(error(InetFileTaskId, QString)), receiver, errorMember);
+  if (progressMember) connect(this, SIGNAL(progress(InetFileTaskId, int)), receiver, progressMember);
   return this;
 }
 
 InetFileTaskId InetFile::newTask(const QString &url, QIODevice *file)
 {
-  Data::QueueItem * item = new Data::QueueItem(url,file);
+  Data::QueueItem * item = new Data::QueueItem(url, file);
   d->queue.append(item);
   InetFileTaskId id;
   id.uid = (void *)item;
@@ -119,7 +119,7 @@ QString InetFile::getTaskError(InetFileTaskId id) const
 }
 
 InetFile::InetFile(QObject *parent) :
-  QObject(parent),d(new Data(this))
+  QObject(parent), d(new Data(this))
 {
 
 }
@@ -142,7 +142,7 @@ void InetFile::dwnldProgres(qint64 bytesReceived, qint64 bytesTotal)
   pit.progres = tenthOfPercent;
   InetFileTaskId id;
   id.uid = (void*)pit.item;
-  emit progress(id,tenthOfPercent);
+  emit progress(id, tenthOfPercent);
 }
 
 void InetFile::dwnldError(QNetworkReply::NetworkError /*code*/)
@@ -192,9 +192,9 @@ void InetFile::Data::startNext()
     request.setSslConfiguration(conf);*/
     pit.reply = manager()->get(request);
   }
-  connect(pit.reply,SIGNAL(error(QNetworkReply::NetworkError)),owner,SLOT(dwnldError(QNetworkReply::NetworkError)));
-  connect(pit.reply,SIGNAL(finished()),owner,SLOT(dwnldFinished()));
-  connect(pit.reply,SIGNAL(downloadProgress(qint64,qint64)),owner,SLOT(dwnldProgres(qint64,qint64)));
+  connect(pit.reply, SIGNAL(error(QNetworkReply::NetworkError)), owner, SLOT(dwnldError(QNetworkReply::NetworkError)));
+  connect(pit.reply, SIGNAL(finished()), owner, SLOT(dwnldFinished()));
+  connect(pit.reply, SIGNAL(downloadProgress(qint64, qint64)), owner, SLOT(dwnldProgres(qint64, qint64)));
   if (!pit.reply->isRunning()) {
     if (pit.reply->error()==QNetworkReply::NoError) {
       if (!pit.reply->isFinished()) return;
@@ -205,7 +205,7 @@ void InetFile::Data::startNext()
   pit.item->poolIndex = poolIndex;
   InetFileTaskId id;
   id.uid = (void*)pit.item;
-  emit owner->progress(id,0);
+  emit owner->progress(id, 0);
 }
 
 void InetFile::Data::releasePool(PoolItem &pit)
@@ -229,7 +229,7 @@ void InetFile::Data::releasePool(PoolItem &pit)
   pit.item = 0;
   InetFileTaskId id;
   id.uid = (void*)item;
-  if (item->poolIndex == TSFailed) emit owner->error(id,item->url);
+  if (item->poolIndex == TSFailed) emit owner->error(id, item->url);
   else emit owner->finished(id);
   startNext();
 }

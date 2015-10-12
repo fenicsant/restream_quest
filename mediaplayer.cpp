@@ -36,9 +36,9 @@ public:
               *list;        //!< Список проигрывания.
 
                             //!  Конструктор.
-  Data(MediaPlayer *owner):QObject(owner),own(owner),lay(0),video(0),
-    bottomCtrls(0),bottomLay(0),play(0),pause(0),stop(0),bottomCtrlAnimation(0),
-    position(0),volume(0),player(0),list(0)
+  Data(MediaPlayer *owner):QObject(owner), own(owner), lay(0), video(0),
+    bottomCtrls(0), bottomLay(0), play(0), pause(0), stop(0), bottomCtrlAnimation(0),
+    position(0), volume(0), player(0), list(0)
   {}
       //! Размер файла иконки play.
   static const quint32 iPlayLen = 985;
@@ -64,8 +64,8 @@ protected:
     QPoint p = own->mapFromGlobal(QCursor::pos());
     if (p.y()>=own->height()-bottomCtrlsHeight) {
       if (!bottomCtrls->isVisible()) {
-        bottomCtrlAnimation->setStartValue(QRect(0,own->height()-2,own->width(),2));
-        bottomCtrlAnimation->setEndValue(QRect(0,own->height()-bottomCtrlsHeight,own->width(),bottomCtrlsHeight));
+        bottomCtrlAnimation->setStartValue(QRect(0, own->height()-2, own->width(), 2));
+        bottomCtrlAnimation->setEndValue(QRect(0, own->height()-bottomCtrlsHeight, own->width(), bottomCtrlsHeight));
         bottomCtrlAnimation->setDuration(500);
         bottomCtrls->show();
         bottomCtrlAnimation->start();
@@ -74,7 +74,7 @@ protected:
       if (player->state()==QMediaPlayer::PlayingState)
         bottomCtrls->hide();
     }
-    return QObject::eventFilter(o,ev);
+    return QObject::eventFilter(o, ev);
   }
 };
 
@@ -83,25 +83,25 @@ const QString MediaPlayer::Data::sLoading = QString::fromUtf8("<font size=26 col
 const QString MediaPlayer::Data::sError = QString::fromUtf8("<font size=26 color=red>Can't open this Video.</font>");
 
 MediaPlayer::MediaPlayer(QWidget *parent):
-  QFrame(parent),d(new Data(this))
+  QFrame(parent), d(new Data(this))
 {
   try {
     setFrameShadow(Sunken);
     setFrameShape(Panel);
     setLayout(d->lay = new QGridLayout());
     d->lay->setMargin(0);
-    d->lay->addWidget(d->video = new QVideoWidget(this),1,1,2,1);
-    d->lay->addWidget(d->issue = new QLabel(this),1,1,2,1);
-    d->lay->addWidget(d->bottomCtrls = new QFrame(this),2,1);
+    d->lay->addWidget(d->video = new QVideoWidget(this), 1, 1, 2, 1);
+    d->lay->addWidget(d->issue = new QLabel(this), 1, 1, 2, 1);
+    d->lay->addWidget(d->bottomCtrls = new QFrame(this), 2, 1);
     d->bottomCtrls->setLayout(d->bottomLay = new QHBoxLayout());
     d->bottomLay->setMargin(2);
     d->bottomLay->addWidget(d->play = new QPushButton(this));
     d->bottomLay->addWidget(d->pause = new QPushButton(this));
     d->bottomLay->addWidget(d->stop = new QPushButton(this));
-    d->bottomLay->addWidget(d->position = new QSlider(this),999);
-    d->lay->addWidget(d->volume = new QSlider(this),1,2);
+    d->bottomLay->addWidget(d->position = new QSlider(this), 999);
+    d->lay->addWidget(d->volume = new QSlider(this), 1, 2);
 
-    d->bottomCtrlAnimation = new QPropertyAnimation(d->bottomCtrls,"geometry");
+    d->bottomCtrlAnimation = new QPropertyAnimation(d->bottomCtrls, "geometry");
     d->player = new QMediaPlayer(this);
     d->list = new QMediaPlaylist(this);
 
@@ -111,42 +111,42 @@ MediaPlayer::MediaPlayer(QWidget *parent):
     d->bottomCtrlsHeight = d->bottomCtrls->height()+7;
     d->video->installEventFilter(d);
 
-    d->lay->setRowStretch(1,999);
+    d->lay->setRowStretch(1, 999);
 
     QPixmap img;
-    if (!img.loadFromData(Data::iPlay,Data::iPlayLen)) {
+    if (!img.loadFromData(Data::iPlay, Data::iPlayLen)) {
       qWarning()<<"MediaPlayer don't load picture play";
       d->play->setText(">");
     } else d->play->setIcon(img);
     d->play->setFlat(true);
-    if (!img.loadFromData(Data::iPause,Data::iPauseLen)) {
+    if (!img.loadFromData(Data::iPause, Data::iPauseLen)) {
       qWarning()<<"MediaPlayer don't load picture pause";
       d->pause->setText("||");
     } else d->pause->setIcon(img);
     d->pause->setFlat(true);
-    if (!img.loadFromData(Data::iStop,Data::iStopLen)) {
+    if (!img.loadFromData(Data::iStop, Data::iStopLen)) {
       qWarning()<<"MediaPlayer don't load picture stop";
       d->stop->setText("[#]");
     } else d->stop->setIcon(img);
     d->stop->setFlat(true);
     d->position->setOrientation(Qt::Horizontal);
-    d->volume->setRange(0,100);
+    d->volume->setRange(0, 100);
     d->volume->setValue(100);
     d->issue->setAlignment(Qt::AlignCenter);
     d->issue->setText(MediaPlayer::Data::sPrompt);
 
-    connect(d->play,SIGNAL(clicked(bool)),d->player,SLOT(play()));
-    connect(d->pause,SIGNAL(clicked(bool)),d->player,SLOT(pause()));
-    connect(d->stop,SIGNAL(clicked(bool)),d->player,SLOT(stop()));
+    connect(d->play, SIGNAL(clicked(bool)), d->player, SLOT(play()));
+    connect(d->pause, SIGNAL(clicked(bool)), d->player, SLOT(pause()));
+    connect(d->stop, SIGNAL(clicked(bool)), d->player, SLOT(stop()));
 
-    connect(d->player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(error(QMediaPlayer::Error)));
-    connect(d->player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChanged(qint64)));
-    connect(d->player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChanged(qint64)));
-    connect(d->player,SIGNAL(volumeChanged(int)),d->volume,SLOT(setValue(int)));
+    connect(d->player, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(error(QMediaPlayer::Error)));
+    connect(d->player, SIGNAL(durationChanged(qint64)), this, SLOT(durationChanged(qint64)));
+    connect(d->player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChanged(qint64)));
+    connect(d->player, SIGNAL(volumeChanged(int)), d->volume, SLOT(setValue(int)));
     //  connect(player,SIGNAL);
 
-    connect(d->position,SIGNAL(sliderMoved(int)),this,SLOT(positionMoved(int)));
-    connect(d->volume,SIGNAL(valueChanged(int)),d->player,SLOT(setVolume(int)));
+    connect(d->position, SIGNAL(sliderMoved(int)), this, SLOT(positionMoved(int)));
+    connect(d->volume, SIGNAL(valueChanged(int)), d->player, SLOT(setVolume(int)));
 
 
 

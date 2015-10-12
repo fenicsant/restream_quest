@@ -30,7 +30,7 @@ public:
   QString video;        //!< Адрес превью фильма.
 
                         //! Другие характеристики фильма (имя - значение).
-  QMap<QString,QVariant> property;
+  QMap<QString, QVariant> property;
     //! Возвращает загруженную обложку фильма
   const QPixmap & poster() const;
     //! Устанавливает обложку фильма.

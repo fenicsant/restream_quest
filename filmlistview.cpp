@@ -37,13 +37,13 @@ public:
   int errorCount;             //!< Счетчик ошибок загрузки.
 
                               //!  Список загружаемых обложек фильмов.
-  QMap<InetFileTaskId,FilmListItem*> loadPosters;
+  QMap<InetFileTaskId, FilmListItem*> loadPosters;
                               //!  Список загружаемых фильмов.
   QList<FilmListItem *> shadowLoad;
                               //!  Конструктор.
   Data(FilmListView *own) :
-    owner(own),scrollArea(0),container(0),lLoadingError(0),layout(0),
-    previewer(0),leftButtonPreview(0),errorCount(0){}
+    owner(own), scrollArea(0), container(0), lLoadingError(0), layout(0),
+    previewer(0), leftButtonPreview(0), errorCount(0){}
                               //! Считает ошибки. При переполнении счетчика выводит сообщение.
   bool addeErrorCount(int loss_scale);
                               //!  Производит очистку списка фоновой загрузки.
@@ -66,7 +66,7 @@ protected:
 };
 
 FilmListView::Data::Label2Btn::Label2Btn(FilmListView *parent) :
-  QLabel(parent),parent_(parent)
+  QLabel(parent), parent_(parent)
 {
   static const unsigned char shadow_png[] = {
     0x89,
@@ -84,7 +84,7 @@ FilmListView::Data::Label2Btn::Label2Btn(FilmListView *parent) :
     0x0,0x49,0x45,0x4e,0x44,0xae,0x42,0x60,0x82,
   };
   QPixmap pm;
-  if (pm.loadFromData(shadow_png,186)) {
+  if (pm.loadFromData(shadow_png, 186)) {
     setScaledContents(true);
     setPixmap(pm);
   } else {
@@ -96,11 +96,11 @@ void FilmListView::previewFilm(FilmListItem *film)
 {
   if (!d->previewer) {
     d->previewer = new FilmPreviewer(this);
-    d->previewer->setGeometry(PreviewIdentSize,0,width()-PreviewIdentSize,height());
+    d->previewer->setGeometry(PreviewIdentSize, 0, width()-PreviewIdentSize, height());
   }
   if (!d->leftButtonPreview) {
     d->leftButtonPreview = new Data::Label2Btn(this);
-    d->leftButtonPreview->setGeometry(0,0,PreviewIdentSize,height());
+    d->leftButtonPreview->setGeometry(0, 0, PreviewIdentSize, height());
   }
   d->previewer->setFilm(film);
   d->previewer->show();
@@ -112,10 +112,10 @@ void FilmListView::previewFilm(FilmListItem *film)
 FilmListView::FilmListView(QWidget *parent) :
   QWidget(parent), d(new Data(this))
 {
-  connect(serverIntf(),SIGNAL(pageReady(int,QByteArray)),this,SLOT(pageReady(int,QByteArray)));
-  connect(serverIntf(),SIGNAL(pageError(int,QString)),this,SLOT(pageError(int,QString)));
-  connect(&d->loader,SIGNAL(finished(InetFileTaskId)),this,SLOT(fileFinished(InetFileTaskId)));
-  connect(&d->loader,SIGNAL(error(InetFileTaskId,QString)),this,SLOT(fileError(InetFileTaskId,QString)));
+  connect(serverIntf(), SIGNAL(pageReady(int, QByteArray)), this, SLOT(pageReady(int, QByteArray)));
+  connect(serverIntf(), SIGNAL(pageError(int, QString)), this, SLOT(pageError(int, QString)));
+  connect(&d->loader, SIGNAL(finished(InetFileTaskId)), this, SLOT(fileFinished(InetFileTaskId)));
+  connect(&d->loader, SIGNAL(error(InetFileTaskId, QString)), this, SLOT(fileError(InetFileTaskId, QString)));
   try {
     QVBoxLayout * lay = new QVBoxLayout();
     d->scrollArea = new QScrollArea(this);
@@ -149,22 +149,22 @@ void FilmListView::closePreview()
 
 void FilmListView::resizeEvent(QResizeEvent *ev)
 {
-  if (d->previewer) d->previewer->resize(ev->size().width()-PreviewIdentSize,ev->size().height());
-  if (d->leftButtonPreview) d->leftButtonPreview->resize(PreviewIdentSize,ev->size().height());
+  if (d->previewer) d->previewer->resize(ev->size().width()-PreviewIdentSize, ev->size().height());
+  if (d->leftButtonPreview) d->leftButtonPreview->resize(PreviewIdentSize, ev->size().height());
 }
 
 void FilmListView::pageReady(int page, const QByteArray &content)
 {
   QJsonParseError jsonError;
-  QJsonDocument jsdoc = QJsonDocument::fromJson(content,&jsonError);
+  QJsonDocument jsdoc = QJsonDocument::fromJson(content, &jsonError);
   if (jsonError.error != QJsonParseError::NoError) {
-    pageError(page,QString::fromUtf8(
+    pageError(page, QString::fromUtf8(
                 "JSON eroor in docum. Page%1. Position: %2. Reason: %3")
               .arg(page).arg(jsonError.offset).arg(jsonError.errorString()));
     return;
   }
   if (!jsdoc.isObject()) {
-    pageError(page,QString::fromUtf8(
+    pageError(page, QString::fromUtf8(
                 "JSON eroor in docum. Page%1. Root element not is A Document")
               .arg(page));
     return;
@@ -172,13 +172,13 @@ void FilmListView::pageReady(int page, const QByteArray &content)
   QJsonObject json = jsdoc.object();
   static const QString sResults = QString::fromUtf8("results");
   if (!json.contains(sResults)) {
-    pageError(page,QString::fromUtf8(
+    pageError(page, QString::fromUtf8(
                 "JSON eroor in docum. Page%1. Don't found a element Results")
               .arg(page));
     return;
   }
   if (!json[sResults].isArray()) {
-    pageError(page,QString::fromUtf8(
+    pageError(page, QString::fromUtf8(
                 "JSON eroor in docum. Page%1. Result is not Array")
               .arg(page));
     return;
@@ -203,16 +203,16 @@ void FilmListView::pageReady(int page, const QByteArray &content)
   if (page==total_pages) {
     d->errorCount = 0;
     QList<FilmListItem*> toRm = d->films;
-    QMap<int,FilmListItem*> byId;
+    QMap<int, FilmListItem*> byId;
     for(int i=d->films.size()-1; i>=0; --i) byId[d->films[i]->id] = d->films[i];
     const int count = d->shadowLoad.size();
     for(int i=0; i<count; ++i) {
       FilmListItem * shf = d->shadowLoad[i];
       if (byId.contains(shf->id)) {
-        FilmListItem * flm = byId.value(shf->id,0);
+        FilmListItem * flm = byId.value(shf->id, 0);
         if (flm) {
           int layIndex = d->layout->indexOf(flm->getAsWidget());
-          d->layout->insertWidget(layIndex,shf->getAsWidget());
+          d->layout->insertWidget(layIndex, shf->getAsWidget());
         } else d->layout->addWidget(shf->getAsWidget());
       } else d->layout->addWidget(shf->getAsWidget());
       d->films.append(shf);
