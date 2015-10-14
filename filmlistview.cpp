@@ -287,7 +287,7 @@ bool FilmListView::Data::addeErrorCount(int loss_scale)
   {
     layout->addWidget(lLoadingError = new QLabel(QString::fromUtf8(
          "<h1 align=center>Failed to get a list of movies.<br>Repeat again in a few minutes.<br>"
-         "If the problem persists, contact the program vendor.</h1>"),owner));
+         "If the problem persists, contact the program vendor.</h1>"), owner));
   }
   return true;
 }

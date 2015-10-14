@@ -11,6 +11,13 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 
+#ifdef MP_ONLY_LOCAL
+#  include <QFile>
+#  include <QDir>
+#  include <QFileInfo>
+#  include "inetfile.h"
+#endif
+
 //! Класс закрытых данных.
 /*! Класс скрывает все данные класса MediaPlayer */
 class MediaPlayer::Data : public QObject
@@ -35,10 +42,18 @@ public:
   QMediaPlaylist
               *list;        //!< Список проигрывания.
 
+#ifdef MP_ONLY_LOCAL
+  QFile  *cacheFile;
+  InetFile        *loader;
+  InetFileTaskId  taskId;
+#endif
                             //!  Конструктор.
   explicit Data(MediaPlayer *owner):QObject(owner), own(owner), lay(0), issue(0), video(0),
     bottomCtrls(0), bottomLay(0), play(0), pause(0), stop(0), bottomCtrlAnimation(0),
-    bottomCtrlsHeight(30),position(0), volume(0), player(0), list(0)
+    bottomCtrlsHeight(30), position(0), volume(0), player(0), list(0)
+#ifdef MP_ONLY_LOCAL
+    ,cacheFile(0), loader(0)
+#endif
   {}
       //! Размер файла иконки play.
   static const quint32 iPlayLen = 985;
@@ -174,6 +189,23 @@ QSize MediaPlayer::sizeHint() const
 
 MediaPlayer::~MediaPlayer()
 {
+  delete d->list;
+  delete d->player;
+  delete d->bottomCtrlAnimation;
+  delete d->volume;
+  delete d->position;
+  delete d->stop;
+  delete d->pause;
+  delete d->play;
+  delete d->bottomLay;
+  delete d->bottomCtrls;
+  delete d->video;
+  delete d->lay;
+#ifdef MP_ONLY_LOCAL
+  delete d->loader;
+  if (d->cacheFile) d->cacheFile->remove();
+  delete d->cacheFile;
+#endif
   delete d;
 }
 
@@ -184,11 +216,49 @@ void MediaPlayer::playMedia(const QString &path)
   d->issue->raise();
   d->video->hide();
   d->list->clear();
-  d->list->addMedia(QUrl(path));
+  QUrl addr = QUrl(path);
+#ifdef MP_ONLY_LOCAL
+  if (addr.isLocalFile()) {
+#endif
+  d->list->addMedia(addr);
   d->list->setCurrentIndex(0);
   d->player->play();
   d->player->pause();
   d->bottomCtrls->show();
+#ifdef MP_ONLY_LOCAL
+  } else {
+    try {
+      if (!d->loader) d->loader = new InetFile(this);
+      d->loader->join(this, SLOT(fileLoaded(InetFileTaskId)), SLOT(fileLoadErr(InetFileTaskId, QString)));
+    } catch (...) {
+      delete d->loader;
+      d->issue->setText(MediaPlayer::Data::sError);
+      d->loader = 0;
+      return;
+    }
+    try {
+      if (d->cacheFile) {
+        d->cacheFile->remove();
+        delete d->cacheFile;
+      }
+      QString name = addr.fileName();
+      const QString templatename = QDir::tempPath()+QDir::separator()
+          +QFileInfo(name).completeBaseName()+"%1."+QFileInfo(name).suffix();
+      do {
+        name = templatename.arg(qrand(), 0, 16);
+      } while (QFile::exists(name));
+      d->cacheFile = new QFile(name);
+      if (!d->cacheFile->open(QFile::ReadWrite)) {
+
+      }
+    } catch (...) {
+      d->issue->setText(MediaPlayer::Data::sError);
+      d->cacheFile = 0;
+      return;
+    }
+    d->taskId = d->loader->newTask(path, d->cacheFile);
+  }
+#endif
 }
 
 void MediaPlayer::setVisible(bool visible)
@@ -226,6 +296,30 @@ void MediaPlayer::positionMoved(int position)
 {
   d->player->setPosition(position);
 }
+
+#ifdef MP_ONLY_LOCAL
+void MediaPlayer::fileLoaded(const InetFileTaskId &id)
+{
+  if (id == d->taskId && d->cacheFile) {
+    d->cacheFile->flush();
+    d->cacheFile->seek(0);
+    d->list->addMedia(QUrl(d->cacheFile->fileName()));
+    d->list->setCurrentIndex(0);
+    d->player->play();
+    d->player->pause();
+    d->bottomCtrls->show();
+  }
+}
+
+void MediaPlayer::fileLoadErr(const InetFileTaskId &id, const QString &/*errorString*/)
+{
+  if (id == d->taskId) {
+    d->issue->setText(MediaPlayer::Data::sError);
+    d->issue->show();
+    d->issue->raise();
+  }
+}
+#endif
 
 // Дальше идут только картинки. Если ничего не спрятано...
 

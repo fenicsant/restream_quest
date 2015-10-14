@@ -1,6 +1,10 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
+#ifdef MP_ONLY_LOCAL
+class InetFileTaskId;
+#endif
+
 #include <QFrame>
 #include <QMediaPlayer>
 
@@ -37,6 +41,10 @@ private slots:
   void positionChanged(qint64 position);
     //! Вызывается при выборе текущей позиции фильма пользователем.
   void positionMoved(int position);
+#ifdef MP_ONLY_LOCAL
+  void fileLoaded(const InetFileTaskId &id);
+  void fileLoadErr(const InetFileTaskId &id, const QString & errorString);
+#endif
 };
 
 //! \file mediaplayer.h Содержит простой видео-проигрыватель.

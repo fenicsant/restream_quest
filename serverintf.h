@@ -21,7 +21,6 @@ public:
       //! Экземпляр объекта.
       /*! Характер класса не требует создания более одного экзепляра. */
   static ServerIntf * instance();
-  ~ServerIntf();
 signals:
       //! Вызывается при успешной загрузке содержимого страницы.
       /*! @param page - номер запрашиваемой страницы;
@@ -42,6 +41,7 @@ private:
       //! Данные класса.
   Data *d;
   Q_DISABLE_COPY(ServerIntf)
+  ~ServerIntf();
 private slots:
       //! Вызывается при окончании загрузки.
   void downloadFinish(const InetFileTaskId &id);
