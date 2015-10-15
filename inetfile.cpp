@@ -185,11 +185,11 @@ void InetFile::Data::startNext()
   }
   { // для уменьшения размера стека
     QNetworkRequest request = QNetworkRequest(QUrl(pit.item->url));
-    /* нужно было в Qt4
+    // /* нужно было в Qt4
      QSslConfiguration conf = request.sslConfiguration();
     conf.setProtocol(QSsl::AnyProtocol);
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(conf);*/
+    request.setSslConfiguration(conf);//*/
     pit.reply = manager()->get(request);
   }
   connect(pit.reply, SIGNAL(error(QNetworkReply::NetworkError)), owner, SLOT(dwnldError(QNetworkReply::NetworkError)));

@@ -48,6 +48,7 @@ public:
   bool addeErrorCount(int loss_scale);
                               //!  Производит очистку списка фоновой загрузки.
   void clearShadowLoad();
+  ~Data();
 };
 
 //! Класс на основе QLabel с обработкой нажатия кнопки мыши.
@@ -131,9 +132,15 @@ FilmListView::FilmListView(QWidget *parent) :
     delete d->layout;
     delete d->container;
     delete d->scrollArea;
+    delete layout();
     delete d;
     throw;
   }
+}
+
+FilmListView::~FilmListView()
+{
+  delete d;
 }
 
 void FilmListView::beginReload()
@@ -304,4 +311,21 @@ void FilmListView::Data::clearShadowLoad()
     delete f;
   }
   shadowLoad.clear();
+}
+
+FilmListView::Data::~Data()
+{
+  clearShadowLoad();
+  if (previewer) {
+    if (previewer->isVisible()) previewer->hide();
+    previewer->setParent(0);
+    delete previewer;
+  }
+  for(int i = films.size()-1; i>=0; --i) delete films.at(i);
+  films.clear();
+  delete leftButtonPreview;
+  delete lLoadingError;
+  delete layout;
+  delete container;
+  delete scrollArea;
 }

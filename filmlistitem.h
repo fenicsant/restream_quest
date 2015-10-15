@@ -58,6 +58,7 @@ public:
   static const QString &noposter();
     //! Конструктор
   explicit FilmListItem(FilmListView *parent);
+  ~FilmListItem();
 private:
     //! Структура закрытых данных.
   class Data;

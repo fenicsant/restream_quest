@@ -97,7 +97,9 @@ void ServerIntf::downloadError(const InetFileTaskId &id, const QString &errorStr
 InetFile *ServerIntf::Data::downloader()
 {
   try {
-    return dwnldr?dwnldr:(dwnldr = new InetFile())->join(owner,SLOT(downloadFinish(InetFileTaskId)),SLOT(downloadError(InetFileTaskId,QString)));
+    return dwnldr?dwnldr:(dwnldr = new InetFile())->join(owner,
+                   SLOT(downloadFinish(InetFileTaskId)),
+                  SLOT(downloadError(InetFileTaskId, QString)));
   } catch (...) {
   }
   return 0;

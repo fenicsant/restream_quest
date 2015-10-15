@@ -29,6 +29,8 @@ public:
     owner(own), listview(lv), widget(0), layout(0), lposter(0), ltitle(0),
     lgenres(0), loverview(0)
   {}
+  ~Data();
+  void clearWidget();
 };
 
 //! Класс обработывает событие нажатия левой кнопки мыши.
@@ -54,6 +56,7 @@ protected:
 
 QWidget *FilmListItem::getAsWidget()
 {
+  if (d->widget) return d->widget;
   static const char * styleSheet =
       "#FilmListItem {border: 2px solid gray ; border-radius: 10px; background-color: #f2fcfc }\n"
       "#FilmListItem:hover {background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.3831, fy:0.33, stop:0.119441 rgba(255, 255, 255, 255), stop:1 #f2fcfc)}\n"
@@ -94,12 +97,7 @@ QWidget *FilmListItem::getAsWidget()
     d->widget->setLayout(d->layout);
     d->widget->setStyleSheet(styleSheet);
   }catch (...) {
-    delete d->loverview;  d->loverview = 0;
-    delete d->lgenres;    d->lgenres = 0;
-    delete d->ltitle;     d->ltitle = 0;
-    delete d->lposter;    d->lposter = 0;
-    delete d->layout;     d->layout = 0;
-    delete d->widget;     d->widget = 0;
+    d->clearWidget();
     throw;
   }
   return d->widget;
@@ -191,3 +189,22 @@ FilmListItem::FilmListItem(FilmListView *parent) :
 {
 }
 
+FilmListItem::~FilmListItem()
+{
+  delete d;
+}
+
+FilmListItem::Data::~Data()
+{
+  clearWidget();
+}
+
+void FilmListItem::Data::clearWidget()
+{
+  delete loverview;  loverview = 0;
+  delete lgenres;    lgenres = 0;
+  delete ltitle;     ltitle = 0;
+  delete lposter;    lposter = 0;
+  delete layout;     layout = 0;
+  delete widget;     widget = 0;
+}

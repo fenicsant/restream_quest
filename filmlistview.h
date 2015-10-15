@@ -21,6 +21,7 @@ public:
   void previewFilm(FilmListItem *film);
     //! Конструктор.
   explicit FilmListView(QWidget *parent = 0);
+  ~FilmListView();
 signals:
     //! Сигнал окончания загрузки.
   void reloadFinished();

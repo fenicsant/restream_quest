@@ -32,7 +32,7 @@ RCC_DIR = $$OBJECTS_DIR
 
 
 #win32: QMAKE_DISTCLEAN += /F /S .build bin
-QMAKE_DISTCLEAN += -r .build bin
+QMAKE_DISTCLEAN += -rf .build debug/ release/  object_script.*
 
 FORMS += \
     filmpreviewer.ui
