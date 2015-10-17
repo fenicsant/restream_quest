@@ -37,5 +37,5 @@ QMAKE_DISTCLEAN += -rf .build debug/ release/  object_script.*
 FORMS += \
     filmpreviewer.ui
 
-DEFINES += MP_ONLY_LOCAL
+#DEFINES += MP_ONLY_LOCAL
 #RESOURCES += resources.qrc

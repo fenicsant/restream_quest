@@ -235,6 +235,7 @@ void FilmListView::pageReady(int page, const QByteArray &content)
       }
       delete flm;
     }
+    d->shadowLoad.clear();
     emit reloadFinished();
   }
   return;

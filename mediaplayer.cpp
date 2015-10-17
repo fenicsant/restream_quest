@@ -76,18 +76,20 @@ public:
 protected:
       //! Отслеживает перемещение мыши по окну вывода фильма, и отображает нижнюю панель.
   bool eventFilter(QObject *o, QEvent *ev) {
-    QPoint p = own->mapFromGlobal(QCursor::pos());
-    if (p.y()>=own->height()-bottomCtrlsHeight) {
-      if (!bottomCtrls->isVisible()) {
-        bottomCtrlAnimation->setStartValue(QRect(0, own->height()-2, own->width(), 2));
-        bottomCtrlAnimation->setEndValue(QRect(0, own->height()-bottomCtrlsHeight, own->width(), bottomCtrlsHeight));
-        bottomCtrlAnimation->setDuration(500);
-        bottomCtrls->show();
-        bottomCtrlAnimation->start();
+    if ( video && video->isVisible() ) {
+      QPoint p = own->mapFromGlobal(QCursor::pos());
+      if (p.y() >= own->height()-bottomCtrlsHeight) {
+        if (!bottomCtrls->isVisible()) {
+          bottomCtrlAnimation->setStartValue(QRect(0, own->height()-2, own->width(), 2));
+          bottomCtrlAnimation->setEndValue(QRect(0, own->height()-bottomCtrlsHeight, own->width(), bottomCtrlsHeight));
+          bottomCtrlAnimation->setDuration(500);
+          bottomCtrls->show();
+          bottomCtrlAnimation->start();
+        }
+      } else {
+        if (player->state()==QMediaPlayer::PlayingState)
+          bottomCtrls->hide();
       }
-    } else {
-      if (player->state()==QMediaPlayer::PlayingState)
-        bottomCtrls->hide();
     }
     return QObject::eventFilter(o, ev);
   }
@@ -189,6 +191,7 @@ QSize MediaPlayer::sizeHint() const
 
 MediaPlayer::~MediaPlayer()
 {
+  d->video->removeEventFilter(d);
   delete d->list;
   delete d->player;
   delete d->bottomCtrlAnimation;
