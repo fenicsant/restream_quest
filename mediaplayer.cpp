@@ -273,8 +273,10 @@ void MediaPlayer::setVisible(bool visible)
   QFrame::setVisible(visible);
 }
 
-void MediaPlayer::error(QMediaPlayer::Error /*error*/)
+void MediaPlayer::error(QMediaPlayer::Error error)
 {
+  qWarning()<<Q_FUNC_INFO<<"error:"<<error<<"("<<((int)error)<<")"<<d->player->errorString();
+  d->bottomCtrls->hide();
   d->issue->setText(MediaPlayer::Data::sError);
   d->issue->show();
   d->issue->raise();
@@ -304,9 +306,15 @@ void MediaPlayer::positionMoved(int position)
 void MediaPlayer::fileLoaded(const InetFileTaskId &id)
 {
   if (id == d->taskId && d->cacheFile) {
-    d->cacheFile->flush();
-    d->cacheFile->seek(0);
-    d->list->addMedia(QUrl(d->cacheFile->fileName()));
+    d->loader->rmTask(id);
+    //d->cacheFile->flush();
+    //d->cacheFile->seek(0);
+    QString name = d->cacheFile->fileName();
+    d->cacheFile->close();
+    delete d->cacheFile;
+    d->cacheFile = 0;
+    qDebug()<<"playing file:"<<name;
+    d->list->addMedia(QUrl(name));
     d->list->setCurrentIndex(0);
     d->player->play();
     d->player->pause();
@@ -317,6 +325,7 @@ void MediaPlayer::fileLoaded(const InetFileTaskId &id)
 void MediaPlayer::fileLoadErr(const InetFileTaskId &id, const QString &/*errorString*/)
 {
   if (id == d->taskId) {
+    d->loader->rmTask(id);
     d->issue->setText(MediaPlayer::Data::sError);
     d->issue->show();
     d->issue->raise();
